@@ -1,0 +1,46 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  /* Base (cool, airy) */
+  --bg:        #f6f9fc;   /* very light blue-gray */
+  --panel:     #ffffff;
+  --fg:        #0f1a2a;   /* deep desaturated blue */
+  --muted:     #5b6b7d;   /* slatey blue for secondary text */
+  --border:    #e2e8f0;   /* light blue-gray border */
+
+  /* Accent (subtle blue) */
+  --accent:           #3a6ea5; /* primary brand blue (muted) */
+  --accent-strong:    #254e79; /* darker for badges/buttons */
+  --accent-soft:      #e6f0fa; /* tinted backgrounds / chips */
+  --accent-ring:      #7fb1e3; /* focus ring color */
+}
+
+
+html,body { background: var(--bg); color: var(--fg); }
+
+.container { @apply max-w-7xl mx-auto px-6; }
+.h1 { @apply text-4xl font-semibold; }
+.copy { @apply text-[15px] leading-7 text-[color:var(--muted)]; }
+
+.btn { @apply inline-flex items-center justify-center rounded-xl px-4 py-2 text-sm transition; }
+.btn-outline { @apply border px-4 py-2 rounded-xl; border-color: var(--border); }
+.btn-outline:hover { border-color: var(--accent-strong); }
+
+.btn-primary { background: var(--accent-strong); color: white; }
+.btn-primary:hover { filter: brightness(0.95); }
+
+.card { @apply rounded-2xl border bg-white shadow-sm; border-color: var(--border); }
+
+/* Inputs */
+input, select, textarea {
+  @apply rounded-xl border px-4 py-2;
+  border-color: var(--border);
+}
+input:focus, select:focus, textarea:focus,
+button:focus { outline: 2px solid var(--accent-ring); outline-offset: 2px; }
+
+/* Links */
+a { color: var(--accent-strong); }
+a:hover { text-decoration: underline; }
