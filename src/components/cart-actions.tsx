@@ -1,6 +1,6 @@
 "use client";
 import { useCart } from "@/components/cart-context";
-import type { Product } from "@/lib/products";
+import type { Product } from "@/lib/products-server";
 
 export function AddToCartButton({ product }: { product: Product }) {
   const { add } = useCart();

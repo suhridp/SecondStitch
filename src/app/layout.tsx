@@ -5,7 +5,7 @@ import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { CartProvider } from "@/components/cart-context";
 import { Playfair_Display, Work_Sans } from "next/font/google";
-
+import AuthListener from "./(auth)/auth-listener";
 const playfair = Playfair_Display({
   subsets: ["latin"],
   variable: "--font-display",
@@ -44,6 +44,7 @@ export default function RootLayout({
     >
       <body className="font-body">
         <CartProvider>
+          <AuthListener />
           <SiteHeader />
           {children}
           <SiteFooter />

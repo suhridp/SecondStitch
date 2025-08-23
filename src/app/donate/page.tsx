@@ -3,8 +3,7 @@ import DonateClient from "./donate-client";
 
 export const metadata = {
   title: "Donate for Upcycling – Second Stitch",
-  description:
-    "Send old clothes for upcycling and earn points you can redeem on your next purchase.",
+  description: "Send garments for upcycling and earn points you can redeem.",
 };
 
 export default function DonatePage() {
@@ -13,7 +12,7 @@ export default function DonatePage() {
       <Section
         eyebrow="Donate"
         title="Give garments a second life"
-        subtitle="Send us your old clothes for upcycling. Earn points you can redeem at checkout."
+        subtitle="Tell us about your garments. We’ll estimate points now and confirm after review."
       >
         <DonateClient />
       </Section>

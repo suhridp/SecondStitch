@@ -1,6 +1,6 @@
 "use client";
 import * as React from "react";
-import type { Product } from "@/lib/products";
+import type { Product } from "@/lib/products-server";
 
 type CartItem = { product: Product; qty: number };
 type CartState = {

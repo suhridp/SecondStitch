@@ -1,53 +1,96 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 import Stripe from "stripe";
+import { supabaseServer } from "@/lib/supabase-server";
+import { supabaseAdmin } from "@/lib/supabase-admin";
 
-const key = process.env.STRIPE_SECRET_KEY;
-if (!key) {
-  console.warn(
-    "STRIPE_SECRET_KEY is not set. Checkout will fail until you add it to .env.local"
-  );
-}
-const stripe = key
-  ? new Stripe(key, { apiVersion: "2024-06-20" })
-  : (null as unknown as Stripe);
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
+  apiVersion: "2024-06-20",
+});
 
-export async function POST(req: NextRequest) {
-  try {
-    const { items } = await req.json();
-    if (!Array.isArray(items) || items.length === 0) {
-      return NextResponse.json({ error: "No items" }, { status: 400 });
-    }
+type CartItem = {
+  slug: string;
+  name: string;
+  price: number;
+  qty: number;
+  image?: string;
+};
 
-    const origin =
-      process.env.NEXT_PUBLIC_SITE_URL ||
-      req.headers.get("origin") ||
-      "http://localhost:3000";
+export async function POST(req: Request) {
+  const body = (await req.json()) as {
+    items: CartItem[];
+    redeem_points?: number;
+  };
+  const sb = supabaseServer();
+  const {
+    data: { user },
+  } = await sb.auth.getUser();
 
-    const line_items = items.map((it: any) => ({
-      quantity: it.qty ?? 1,
+  if (!body.items?.length) {
+    return NextResponse.json(
+      { ok: false, error: "Cart is empty" },
+      { status: 400 }
+    );
+  }
+
+  // Clamp redemption: 100 pts = $1
+  const redeemPoints = Math.max(0, Math.floor(body.redeem_points || 0));
+  const discountCents = redeemPoints; // if 1 pt = 1 cent; change rule if needed
+
+  const line_items: Stripe.Checkout.SessionCreateParams.LineItem[] =
+    body.items.map((i) => ({
+      quantity: i.qty,
       price_data: {
         currency: "usd",
-        unit_amount: Math.round(((it.product?.price ?? it.price) || 0) * 100),
+        unit_amount: Math.round(i.price * 100),
         product_data: {
-          name: it.product?.name ?? it.name,
-          description: it.product?.subtitle ?? it.subtitle ?? undefined,
-          images: it.product?.image
-            ? [`${origin}${it.product.image}`]
-            : undefined,
+          name: i.name,
+          images: i.image ? [i.image] : undefined,
+          metadata: { slug: i.slug },
         },
       },
     }));
 
-    const session = await stripe.checkout.sessions.create({
-      mode: "payment",
-      line_items,
-      success_url: `${origin}/thank-you?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${origin}/products`,
+  // Create optional coupon for points redemption
+  let discounts: Stripe.Checkout.SessionCreateParams["discounts"] = undefined;
+  if (discountCents > 0) {
+    const coupon = await stripe.coupons.create({
+      amount_off: discountCents,
+      currency: "usd",
+      duration: "once",
     });
-
-    return NextResponse.json({ url: session.url });
-  } catch (err: any) {
-    console.error(err);
-    return NextResponse.json({ error: "Stripe error" }, { status: 500 });
+    discounts = [{ coupon: coupon.id }];
   }
+
+  const site = process.env.NEXT_PUBLIC_SITE_URL!;
+  const session = await stripe.checkout.sessions.create({
+    mode: "payment",
+    line_items,
+    discounts,
+    success_url: `${site}/thank-you?session_id={CHECKOUT_SESSION_ID}`,
+    cancel_url: `${site}/cart`,
+    metadata: {
+      user_id: user?.id ?? "",
+      redeem_points: String(redeemPoints),
+      // you can also stash a serialized cart here if you want
+    },
+  });
+
+  // Create a pending order row (status: created)
+  const subtotal = body.items.reduce(
+    (s, i) => s + Math.round(i.price * 100) * i.qty,
+    0
+  );
+  await supabaseAdmin()
+    .from("orders")
+    .insert([
+      {
+        user_id: user?.id ?? null,
+        stripe_session_id: session.id,
+        subtotal_cents: subtotal,
+        points_redeemed: redeemPoints,
+        status: "created",
+      },
+    ]);
+
+  return NextResponse.json({ ok: true, id: session.id, url: session.url });
 }

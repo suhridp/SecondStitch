@@ -30,7 +30,7 @@ export function SiteFooter() {
         </div>
         <div>
           <p className="font-medium">Contact</p>
-          <p className="mt-2 text-charcoal-700">second_stitch80@gmail.com</p>
+          <p className="mt-2 text-charcoal-700">secondstitch8@gmail.com</p>
         </div>
       </div>
       <div className="container py-6 text-xs text-charcoal-500">

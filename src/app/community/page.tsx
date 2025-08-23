@@ -3,8 +3,7 @@ import CommunityClient from "./community-client";
 
 export const metadata = {
   title: "Community – Second Stitch",
-  description:
-    "Share looks, care tips, upcycling ideas, and swaps. Join the Second Stitch community.",
+  description: "Share looks, care tips, upcycling ideas, and swaps.",
 };
 
 export default function CommunityPage() {
@@ -15,7 +14,6 @@ export default function CommunityPage() {
         title="Share, learn, and connect"
         subtitle="Looks, care tips, upcycling ideas, and swaps. Join the conversation."
       >
-        {/* Client logic lives inside this wrapper */}
         <CommunityClient />
       </Section>
     </main>

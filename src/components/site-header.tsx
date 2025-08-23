@@ -3,6 +3,7 @@ import Link from "next/link";
 import * as React from "react";
 import { useCart } from "@/components/cart-context";
 import { CartDrawer } from "@/components/cart-drawer";
+import { UserMenu } from "@/components/auth/user-menu";
 
 export function SiteHeader() {
   const { open, items } = useCart();
@@ -34,6 +35,7 @@ export function SiteHeader() {
           <Link href="/lookbook" className="hover:underline">
             Lookbook
           </Link>
+          <UserMenu />
           <Link href="/impact" className="hover:underline">
             Impact
           </Link>
