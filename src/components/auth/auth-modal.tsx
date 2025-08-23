@@ -1,6 +1,5 @@
 "use client";
 import * as React from "react";
-import { supabaseClient } from "@/lib/supabase";
 import { supabaseBrowser } from "@/lib/supabase-browser";
 
 export function AuthModal({

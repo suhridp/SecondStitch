@@ -3,7 +3,7 @@ import Link from "next/link";
 import * as React from "react";
 import { useCart } from "@/components/cart-context";
 import { CartDrawer } from "@/components/cart-drawer";
-import { UserMenu } from "@/components/auth/user-menu";
+import  UserMenu  from "@/components/auth/user-menu";
 
 export function SiteHeader() {
   const { open, items } = useCart();

@@ -1,3 +1,4 @@
+// src/app/admin/donations/table.tsx
 "use client";
 import * as React from "react";
 import { supabaseBrowser } from "@/lib/supabase-browser";
@@ -22,7 +23,7 @@ export default function AdminDonationsClient() {
   const [loading, setLoading] = React.useState(true);
   const [msg, setMsg] = React.useState<string | null>(null);
 
-  async function load() {
+  const load = React.useCallback(async () => {
     setLoading(true);
     const { data, error } = await sb
       .from("donations")
@@ -31,15 +32,15 @@ export default function AdminDonationsClient() {
       .limit(50);
     if (!error) setRows((data || []) as Donation[]);
     setLoading(false);
-  }
+  }, [sb]);
 
   React.useEffect(() => {
     load();
-  }, []);
+  }, [load]);
 
   async function approve(d: Donation) {
     setMsg(null);
-    const res = await fetch("/api/donations/approve", {
+    const res = await fetch("/api/donate/approve", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -58,7 +59,7 @@ export default function AdminDonationsClient() {
   }
 
   async function reject(id: string) {
-    const res = await fetch("/api/donations/reject", {
+    const res = await fetch("/api/donate/reject", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ donation_id: id }),

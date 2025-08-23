@@ -1,9 +1,10 @@
+// src/app/admin/page.tsx
 import Link from "next/link";
 import { supabaseServer } from "@/lib/supabase-server";
 import { isAdmin } from "@/lib/admin";
 
 export default async function AdminHome() {
-  const sb = supabaseServer();
+  const sb = await supabaseServer();
   const {
     data: { user },
   } = await sb.auth.getUser();

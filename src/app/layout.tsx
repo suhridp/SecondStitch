@@ -5,7 +5,7 @@ import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { CartProvider } from "@/components/cart-context";
 import { Playfair_Display, Work_Sans } from "next/font/google";
-import AuthListener from "./(auth)/auth-listener";
+import AuthListener from "../components/auth/auth-listener";
 const playfair = Playfair_Display({
   subsets: ["latin"],
   variable: "--font-display",
@@ -40,6 +40,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
+      data-scroll-behavior="smooth"
       className={`${playfair.variable} ${workSans.variable} scroll-smooth`}
     >
       <body className="font-body">

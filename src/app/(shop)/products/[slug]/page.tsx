@@ -2,7 +2,10 @@ import { notFound } from "next/navigation";
 import PDPGallery from "@/components/pdp/gallery-client";
 import VariantSelector from "@/components/pdp/variant-selector";
 import { getProductBySlugFull, publicImageUrl } from "@/lib/products-server";
-
+export const metadata = {
+  title: "Product – Second Stitch",
+  description: "One‑of‑one upcycled pieces with thoughtful details.",
+};
 export default async function ProductPage({
   params,
 }: {

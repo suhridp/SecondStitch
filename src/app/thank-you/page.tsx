@@ -1,3 +1,4 @@
+import Link from "next/link";
 export default function ThankYouPage() {
   return (
     <main className="container pt-24 pb-24 max-w-2xl">
@@ -6,9 +7,9 @@ export default function ThankYouPage() {
         Your order was received. We emailed your receipt and will notify you
         when it ships.
       </p>
-      <a href="/products" className="btn btn-outline mt-8">
+      <Link href="/products" className="underline">
         Continue shopping
-      </a>
+      </Link>
     </main>
   );
 }

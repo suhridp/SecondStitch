@@ -1,3 +1,9 @@
+// src/app/(marketing)/impact/page.tsx
+export const metadata = {
+  title: "Impact – Second Stitch",
+  description: "Our sustainability impact and progress.",
+};
+
 export default function ImpactPage() {
   const items = [
     { k: "Textile Waste Diverted", v: "120kg" },
@@ -7,16 +13,17 @@ export default function ImpactPage() {
   return (
     <main className="container pt-24 pb-24">
       <h1 className="h1">Impact</h1>
-      <div className="mt-10 grid md:grid-cols-3 gap-6">
+
+      <dl className="mt-10 grid md:grid-cols-3 gap-6">
         {items.map((item) => (
           <div key={item.k} className="card p-6">
-            <p className="text-sm tracking-widest text-charcoal-500 uppercase">
+            <dt className="text-sm tracking-widest text-charcoal-500 uppercase">
               {item.k}
-            </p>
-            <p className="mt-2 text-3xl font-semibold">{item.v}</p>
+            </dt>
+            <dd className="mt-2 text-3xl font-semibold">{item.v}</dd>
           </div>
         ))}
-      </div>
+      </dl>
     </main>
   );
 }

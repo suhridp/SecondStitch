@@ -31,9 +31,16 @@ export function PostList({ filters }: { filters: ForumFilters }) {
   }
 
   React.useEffect(() => {
-    load();
-  }, []);
-
+    (async () => {
+      setLoading(true);
+      const { data, error } = await sb
+        .from("forum_posts")
+        .select("*")
+        .order("created_at", { ascending: false });
+      if (!error) setAll((data || []) as Post[]);
+      setLoading(false);
+    })();
+  }, [sb]);
   // client-side filtering
   const q = filters.q.trim().toLowerCase();
   let posts = all.filter((p) => {

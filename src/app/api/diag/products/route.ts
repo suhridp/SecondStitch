@@ -1,7 +1,9 @@
 import { supabaseServer } from "@/lib/supabase-server";
+import type { PostgrestError } from "@supabase/supabase-js";
 
 export async function GET() {
   const sb = await supabaseServer();
+
   const { data, error, count } = await sb
     .from("products")
     .select("id, slug, name, price_cents, image", {
@@ -11,17 +13,19 @@ export async function GET() {
     .order("created_at", { ascending: false })
     .limit(5);
 
+  const err = error as PostgrestError | null;
+
   return new Response(
     JSON.stringify(
       {
-        ok: !error,
+        ok: !err,
         count: count ?? data?.length ?? 0,
         data,
-        error: error && {
-          message: error.message,
-          details: (error as any).details,
-          hint: (error as any).hint,
-          code: (error as any).code,
+        error: err && {
+          message: err.message,
+          details: err.details,
+          hint: err.hint,
+          code: err.code,
         },
       },
       null,

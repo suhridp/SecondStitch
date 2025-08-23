@@ -1,3 +1,10 @@
+// src/app/(marketing)/about/page.tsx
+export const metadata = {
+  title: "About – Second Stitch",
+  description:
+    "Our story: thoughtfully upcycled garments and accessories designed to last.",
+};
+
 export default function AboutPage() {
   return (
     <main className="container pt-24 pb-24 max-w-3xl">

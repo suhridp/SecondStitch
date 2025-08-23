@@ -20,7 +20,8 @@ export async function POST(req: Request) {
     items: CartItem[];
     redeem_points?: number;
   };
-  const sb = supabaseServer();
+
+  const sb = await supabaseServer();
   const {
     data: { user },
   } = await sb.auth.getUser();
@@ -32,9 +33,8 @@ export async function POST(req: Request) {
     );
   }
 
-  // Clamp redemption: 100 pts = $1
   const redeemPoints = Math.max(0, Math.floor(body.redeem_points || 0));
-  const discountCents = redeemPoints; // if 1 pt = 1 cent; change rule if needed
+  const discountCents = redeemPoints; // 1 pt = 1¢
 
   const line_items: Stripe.Checkout.SessionCreateParams.LineItem[] =
     body.items.map((i) => ({
@@ -50,7 +50,6 @@ export async function POST(req: Request) {
       },
     }));
 
-  // Create optional coupon for points redemption
   let discounts: Stripe.Checkout.SessionCreateParams["discounts"] = undefined;
   if (discountCents > 0) {
     const coupon = await stripe.coupons.create({
@@ -68,18 +67,14 @@ export async function POST(req: Request) {
     discounts,
     success_url: `${site}/thank-you?session_id={CHECKOUT_SESSION_ID}`,
     cancel_url: `${site}/cart`,
-    metadata: {
-      user_id: user?.id ?? "",
-      redeem_points: String(redeemPoints),
-      // you can also stash a serialized cart here if you want
-    },
+    metadata: { user_id: user?.id ?? "", redeem_points: String(redeemPoints) },
   });
 
-  // Create a pending order row (status: created)
   const subtotal = body.items.reduce(
     (s, i) => s + Math.round(i.price * 100) * i.qty,
     0
   );
+
   await supabaseAdmin()
     .from("orders")
     .insert([

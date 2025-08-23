@@ -75,7 +75,7 @@ export function NewPost({ onCreated }: { onCreated?: () => void }) {
         />
         <select
           value={tag}
-          onChange={(e) => setTag(e.target.value as any)}
+          onChange={(e) =>setTag(e.target.value as (typeof TAGS)[number])}
           className="rounded-xl border px-4 py-2"
         >
           {TAGS.map((t) => (

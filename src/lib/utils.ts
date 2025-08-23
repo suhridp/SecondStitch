@@ -1,12 +1,9 @@
-import { clsx, type ClassValue } from "clsx"
-import { twMerge } from "tailwind-merge"
+// src/lib/utils.ts
+export function cn(...parts: Array<string | false | null | undefined>) {
+  return parts.filter(Boolean).join(" ");
+}
 
-export function cn(...inputs: ClassValue[]) {
-  return twMerge(clsx(inputs))
-}
-export function cn(...classes: Array<string | undefined | null | false>) {
-  return classes.filter(Boolean).join(" ");
-}
-export function Skeleton({ className = "" }: { className?: string }) {
-  return <div className={`animate-pulse bg-slate-200 ${className}`} />;
+export function toUSD(cents: number | null | undefined) {
+  const v = (cents ?? 0) / 100;
+  return `$${v.toFixed(2)}`;
 }
