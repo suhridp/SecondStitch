@@ -1,6 +1,15 @@
+// src/components/product-grid.tsx
 import Link from "next/link";
 import Image from "next/image";
-import type { UIProduct } from "@/lib/products-server";
+
+type UIProduct = {
+  slug: string;
+  name: string;
+  price: number; // dollars
+  image: string;
+  subtitle?: string;
+  description?: string;
+};
 
 export function ProductGrid({ products }: { products: UIProduct[] }) {
   return (
@@ -9,7 +18,7 @@ export function ProductGrid({ products }: { products: UIProduct[] }) {
         <Link
           key={p.slug}
           href={`/products/${p.slug}`}
-          className="group card overflow-hidden group card overflow-hidden transition-transform hover:-translate-y-0.5 hover:shadow-md"
+          className="group card overflow-hidden transition-transform hover:-translate-y-0.5 hover:shadow-md"
         >
           <div className="relative aspect-[4/5]">
             <Image
