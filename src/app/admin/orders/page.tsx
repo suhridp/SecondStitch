@@ -20,13 +20,13 @@ export default async function AdminOrdersPage() {
   } = await sb.auth.getUser();
   if (!isAdmin(user?.email)) return <p>Not authorized.</p>;
 
-  const { data: orders = [] } = await sb
+  const { data } = await sb
     .from("orders")
-    .select<"*", OrderRow>(
-      "id, created_at, status, subtotal_cents, points_redeemed, user_id"
-    )
+    .select("id, created_at, status, subtotal_cents, points_redeemed, user_id")
     .order("created_at", { ascending: false })
     .limit(50);
+
+  const orders = (data ?? []) as OrderRow[];
 
   return (
     <div className="grid gap-4">
