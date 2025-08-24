@@ -1,14 +1,23 @@
 "use client";
 import * as React from "react";
-import type { Product } from "@/lib/products-server";
 
-type CartItem = { product: Product; qty: number };
+type CartProduct = {
+  slug: string;
+  name: string;
+  price: number; // dollars
+  image?: string | null;
+  subtitle?: string | null;
+  description?: string | null;
+};
+
+type CartItem = { product: CartProduct; qty: number };
+
 type CartState = {
   items: CartItem[];
   isOpen: boolean;
   open: () => void;
   close: () => void;
-  add: (product: Product, qty?: number) => void;
+  add: (product: CartProduct, qty?: number) => void;
   remove: (slug: string) => void;
   setQty: (slug: string, qty: number) => void;
   total: () => number;
@@ -28,7 +37,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     localStorage.setItem("ss_cart", JSON.stringify(items));
   }, [items]);
 
-  const add = (product: Product, qty = 1) => {
+  const add = (product: CartProduct, qty = 1) => {
     setItems((prev) => {
       const i = prev.findIndex((x) => x.product.slug === product.slug);
       if (i > -1) {
@@ -40,14 +49,17 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     });
     setOpen(true);
   };
+
   const remove = (slug: string) =>
     setItems((prev) => prev.filter((x) => x.product.slug !== slug));
+
   const setQty = (slug: string, qty: number) =>
     setItems((prev) =>
       prev.map((x) =>
         x.product.slug === slug ? { ...x, qty: Math.max(1, qty) } : x
       )
     );
+
   const total = () => items.reduce((s, x) => s + x.product.price * x.qty, 0);
 
   const value: CartState = {
@@ -60,6 +72,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     setQty,
     total,
   };
+
   return <CartCtx.Provider value={value}>{children}</CartCtx.Provider>;
 }
 
