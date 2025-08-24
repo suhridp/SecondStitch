@@ -17,9 +17,7 @@ export async function POST(req: Request) {
   let event: Stripe.Event;
 
   try {
-    const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-      apiVersion: "2024-06-20",
-    });
+    const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
     event = stripe.webhooks.constructEvent(
       rawBody,
       sig,
